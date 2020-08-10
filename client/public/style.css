@@ -1,6 +1,33 @@
 button {
-    text-align: center; 
+    margin-left: 10pt;
+    
+}
+
+.add-wish-button {
+    padding: 5pt 10pt;
+}
+
+.wish-title {
+    width: 100pt;
+    display:inline-block;
     
 
+}
+
+.wish {
+    margin-top: 5pt;
+
+}
+
+input {
+    padding: 5pt 5pt;  
+}
+
+.title {
+    margin-left: 20pt;
+}
+
+.new-wish {
+    margin-left: 20pt;
 
 }

@@ -17,8 +17,8 @@
                         :key="wish.id"
                         :class="{ completed: wish.completed }">
                             <div class="view">
-                                <input class="toggle" type="checkbox" v-model="wish.completed" @change="completedWish(wish)">
-                                <label>{{ wish.title }}</label>
+                                <input class="toggle" type="checkbox" v-model="wish.completed" @change="completeWish(wish)">
+                                <label class="wish-title">{{ wish.title }}</label>
                                 <button class="destroy" @click="removeWish(wish)">Ta bort</button>
                             </div>
                         </li> 
@@ -32,6 +32,8 @@
 </template>
 
 <script>
+
+    import api from '../Api';
 
 // visibility filters
   let filters = {
@@ -70,10 +72,18 @@
     },
 
     mounted() {
-      // inject some startup data
-      this.wishes = [{title: 'My little Pony', completed:false},{title: 'Solstol', completed:false}];
-      // hide the loading message
-      this.loading = false;
+        api.getAll()
+            .then(response => {
+                this.$log.debug("Data loaded: ", response.data)
+                this.wishes = response.data
+            })
+
+            .catch(error => {
+                this.$log.debug(error)
+                this.error = "Failed to load wishes"
+            })
+
+            .finally(() => this.loading = false)
     },
 
     // computed properties
@@ -119,9 +129,16 @@
           return
         }
 
-        this.wishes.push({
-          title: value,
-          completed: false
+        api.createNew(value, false).then( (response) => {
+            this.$log.debug("New item created:", response);
+            this.wishes.push({
+                id: response.data.id,
+                title: value,
+                completed: false
+            })
+        }).catch((error) => {
+            this.$log.debug(error);
+            this.error = "Failed to load wish"
         });
 
         this.newWish = ''
@@ -131,11 +148,24 @@
         this.visibility = vis
       },
 
-      //completeWish (wish) {
-      //},
+      completeWish (wish) {
+            api.updateForId(wish.id, wish.title, wish.completed).then((response) => {
+              this.$log.info("Item updated:", response.data);
+          }).catch((error) => {
+              this.$log.debug(error)
+              wish.completed = !wish.completed
+              this.error = "Failed to update wish"
+          });
+      },
 
       removeWish: function (wish) { // notice NOT using "=>" syntax
-        this.wishes.splice(this.wishes.indexOf(wish), 1)
+        api.removeForId(wish.id).then(() => {
+            this.$log.debug("Item removed:", wish);
+            this.wishes.splice(this.wishes.indexOf(wish), 1)
+        }).catch((error) => {
+            this.$log.debug(error);
+            this.error = "Failed to remove wish"
+        });
       },
 
       editWish: function (wish) {
