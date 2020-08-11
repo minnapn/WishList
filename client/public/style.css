@@ -24,10 +24,28 @@ input {
 }
 
 .title {
-    margin-left: 20pt;
+    margin-left: 40pt;
 }
 
 .new-wish {
     margin-left: 20pt;
 
 }
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.main{
+    margin-left: 10pt;
+    margin-top: 10pt;
+    padding: 10pt 10pt;
+    padding-right: 30pt;
+    width: fit-content;
+    background-color: mintcream;
+    border-color: powderblue;
+    border-style: dotted;
+}
+
+
+

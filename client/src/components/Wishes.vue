@@ -15,12 +15,22 @@
                         <li v-for="wish in filteredWishes"
                         class="wish"
                         :key="wish.id"
-                        :class="{ completed: wish.completed }">
+                        :class="{ completed: wish.completed, editing: wish == editedWish }">
                             <div class="view">
                                 <input class="toggle" type="checkbox" v-model="wish.completed" @change="completeWish(wish)">
-                                <label class="wish-title">{{ wish.title }}</label>
+                                <label class="wish-title" 
+                                @dblclick="editWish(wish)">
+                                {{ wish.title }}
+                                </label>
                                 <button class="destroy" @click="removeWish(wish)">Ta bort</button>
                             </div>
+                            <input class="edit" type="text"
+                                v-show="editedWish"
+                                v-model="wish.title"
+                                v-wish-focus="wish == editedWish"
+                                @blur="doneEdit(wish)"
+                                @keyup.enter="doneEdit(wish)"
+                                @keyup.esc="cancelEdit(wish)">
                         </li> 
                     </ul>
                 </section>            
